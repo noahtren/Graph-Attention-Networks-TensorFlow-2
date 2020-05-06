@@ -1,6 +1,8 @@
-"""Implementation of Graph Attention Networks (GATs)
+"""Implementation of Graph Attention Networks (GATs) By Petar Veličković,
+Guillem Cucurull, Arantxa Casanova, Adriana Romero, Pietro Liò, and Yoshua Bengio
 https://arxiv.org/abs/1710.10903
 """
+
 
 import tensorflow as tf
 
@@ -11,9 +13,9 @@ class GraphAttention(tf.keras.layers.Layer):
     self.hidden_size = hidden_size
     self.max_neighbors = max_neighbors
     self.num_heads = num_heads
-
     # trainable alignment matrix for general-style self-attention
     self.attn_ws = [tf.keras.layers.Dense(hidden_size) for _ in range(num_heads)]
+    # output layer
     self.out_w = tf.keras.layers.Dense(hidden_size)
 
 
@@ -38,8 +40,8 @@ class GraphAttention(tf.keras.layers.Layer):
     # aggregate features from all neighbors, including the node itself
     query = tf.concat([query, value], axis=1)
 
+    # multi-head self-attention
     contexts = []
-    # multi-head  self-attention
     for i in range(self.num_heads):
       query = self.attn_ws[i](query)
       e = tf.matmul(value, query, transpose_b=True)
@@ -48,9 +50,10 @@ class GraphAttention(tf.keras.layers.Layer):
       context = tf.matmul(scores, query)
       contexts.append(context)
 
+    # concatenate contexts from each attention head
     contexts = tf.concat(contexts, axis=-1)
 
-    # produce new features from context
+    # produce new features from full context
     x = self.out_w(contexts)
     x = tf.nn.relu(x)
     return x
