@@ -45,6 +45,7 @@ class GraphAttention(tf.keras.layers.Layer):
     for i in range(self.num_heads):
       query = self.attn_ws[i](query)
       e = tf.matmul(value, query, transpose_b=True)
+      e = tf.nn.swish(e)
       scores = tf.nn.softmax(e)
       # sum all query embeddings according to attention scores
       context = tf.matmul(scores, query)
