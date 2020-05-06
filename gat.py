@@ -26,8 +26,8 @@ class GraphAttention(tf.keras.layers.Layer):
     # Inputs:
         value: the vector relating to the node to encode. Should be of size:
           [batch_size, 1, hidden_size]
-        queries: a list of tensors, each providing embeddings for the neighbors
-          of the node which are attended to. Each query should be of size:
+        query: a tensor providing embeddings for the neighbors of the node
+          which are to be attended to. Each query should be of size:
           [batch_size, max_neighbors, hidden_size]
     """
 
