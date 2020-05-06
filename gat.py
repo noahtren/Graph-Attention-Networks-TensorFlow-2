@@ -1,4 +1,4 @@
-"""Implementation of Graph Attention Networks (GAT)
+"""Implementation of Graph Attention Networks (GATs)
 https://arxiv.org/abs/1710.10903
 """
 
