@@ -21,7 +21,8 @@ class GraphAttention(tf.keras.layers.Layer):
 
   def call(self, inputs, debug=False):
     """Calculate scores of all neighboring nodes using general Luong-style
-    self-attention with additive aggregation.
+    self-attention. If multiple attention heads are used, contexts are
+    concatenated.
 
     # Inputs:
         value: the vector relating to the node to encode. Should be of size:
@@ -29,23 +30,30 @@ class GraphAttention(tf.keras.layers.Layer):
         query: a tensor providing embeddings for the neighbors of the node
           which are to be attended to. Each query should be of size:
           [batch_size, max_neighbors, hidden_size]
+        num_neighbors: the number of neighbors to attend to from the query
+          tensor. Only the first `max_neighbors` nodes are attended to.
     """
 
-    query = inputs['query']
     value = inputs['value']
+    query = inputs['query']
+    num_neighbors = inputs['num_neighbors']
 
     assert value.shape[1] == 1, f'second dim of value should be 1, but was {value.shape[1]}'
     assert query.shape[1] == self.max_neighbors, f'second dim of query should equal max_neighbors, but was {query.shape[1]}'
+    assert num_neighbors < self.max_neighbors, f'num_neighbors input of {num_neighbors} cannot be greater than max neighbors'
 
     # aggregate features from all neighbors, including the node itself
-    query = tf.concat([query, value], axis=1)
+    query = tf.concat([value, query], axis=1)
 
     # multi-head self-attention
     contexts = []
     for i in range(self.num_heads):
       query = self.attn_ws[i](query)
       e = tf.matmul(value, query, transpose_b=True)
+      mask = tf.sequence_mask(num_neighbors + 1, maxlen=self.max_neighbors)[:, tf.newaxis]
       e = tf.nn.swish(e)
+      # apply mask before softmaxing
+      e = tf.where(mask, e, tf.ones_like(e) * -1e9)
       scores = tf.nn.softmax(e)
       # sum all query embeddings according to attention scores
       context = tf.matmul(scores, query)
@@ -61,12 +69,13 @@ class GraphAttention(tf.keras.layers.Layer):
 
 
 if __name__ == "__main__":
-  query = tf.random.normal([8, 10, 512])
   value = tf.random.normal([8, 1, 512])
+  query = tf.random.normal([8, 10, 512])
   g_attn = GraphAttention(num_heads=4, hidden_size=512, max_neighbors=10)
   x = g_attn({
       'query': query,
-      'value': value
+      'value': value,
+      'num_neighbors': 5
   })
   print(f'Input shape: {value.shape}')
   print(f'Output shape: {x.shape}')

@@ -2,7 +2,10 @@
 
 # Graph Attention Networks
 
+![Graph Attention Networks](https://camo.githubusercontent.com/4fe1a90e67d17a2330d7cfcddc930d5f7501750c/68747470733a2f2f7777772e64726f70626f782e636f6d2f732f71327a703170366b37396a6a6431352f6761745f6c617965722e706e673f7261773d31)
+
 This is a simple implementation of Graph Attention Networks (GATs) using the `tf.keras` subclassing API.
+The code provided is a single layer. Stack many of them if you want to use multiple layers.
 
 ## Resources
 
