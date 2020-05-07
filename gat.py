@@ -50,9 +50,9 @@ class GraphAttention(tf.keras.layers.Layer):
     for i in range(self.num_heads):
       query = self.attn_ws[i](query)
       e = tf.matmul(value, query, transpose_b=True)
-      mask = tf.sequence_mask(num_neighbors + 1, maxlen=self.max_neighbors)[:, tf.newaxis]
       e = tf.nn.swish(e)
       # apply mask before softmaxing
+      mask = tf.sequence_mask(num_neighbors + 1, maxlen=self.max_neighbors)[:, tf.newaxis]
       e = tf.where(mask, e, tf.ones_like(e) * -1e9)
       scores = tf.nn.softmax(e)
       # sum all query embeddings according to attention scores
