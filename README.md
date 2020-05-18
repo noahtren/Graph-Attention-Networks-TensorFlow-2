@@ -7,7 +7,7 @@
 This is a simple implementation of Graph Attention Networks (GATs) using the `tf.keras` subclassing API.
 The code provided is a single layer. Stack many of them if you want to use multiple layers.
 
-**Note**: For a more mature library for graph neural networks in TensorFlow 2, check out [Spektral](https://github.com/danielegrattarola/spektral).
+**Note**: For a mature library for graph neural networks in TensorFlow 2, check out [Spektral](https://github.com/danielegrattarola/spektral).
 
 ## Resources
 
