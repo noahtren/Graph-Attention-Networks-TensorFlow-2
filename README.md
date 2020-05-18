@@ -15,4 +15,4 @@ The code provided is a single layer. Stack many of them if you want to use multi
 
 [Blog post by first author](https://petar-v.com/GAT/)
 
-[GAT page on my research wiki](https://blog.noahtren.com/🌱/20/)
+[GAT page on my research wiki](https://blog.noahtren.com/%F0%9F%8C%B1/38358b75-cbc6-4c66-bb0c-e9829a293f2f/)
